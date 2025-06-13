@@ -1,0 +1,46 @@
+\section{Virtuelles Filesystem}
+
+\subsection{Ziel und Überblick}
+Dieses Kapitel beschreibt die Ziele, den Aufbau und die Funktionen des virtuellen Dateisystems (VFS), das zur Navigation und Bearbeitung von Instanzen innerhalb der graphbasierten Datenbank dient.
+
+\subsection{Explorer-Baum}
+Der Explorer-Baum stellt die logische Struktur der Instanzen hierarchisch dar. Basierend auf dem Schemamodell werden gültige Pfade generiert und zyklische Referenzen erkannt und behandelt. Ziel ist eine konsistente, intuitive Navigation vergleichbar mit einem klassischen Dateisystem.
+
+\subsubsection{Problemstellung}
+Die Herausforderung besteht darin, komplexe Referenzbeziehungen und potenzielle Zyklen so zu verarbeiten, dass eine eindeutige, strukturierte Baumansicht entsteht.
+
+\subsubsection{Lösungsansätze}
+Zur Lösung wird eine Tiefensuche mit Zykluserkennung eingesetzt. Dabei werden Root-Typen ermittelt und gültige Pfadsegmente anhand der `UriTree`-Struktur berechnet.
+
+\subsubsection{Umsetzung}
+Die Baumstruktur wird dynamisch zur Laufzeit generiert. Zyklische Verweise werden durch Alias-Referenzen dargestellt, um Redundanzen und Endlosschleifen zu vermeiden.
+
+\subsection{Editor}
+Der Editor zeigt den Inhalt einer Instanz als strukturierte JSON-Datei an. Änderungen erfolgen direkt im Dateitext und werden über folgende Funktionen verarbeitet:
+\begin{itemize}
+	\item \texttt{createDir} – Erzeugt eine neue Instanz inklusive Pfad und Meta-Informationen
+	\item \texttt{writeFile} – Aktualisiert den Inhalt einer bestehenden Instanz
+\end{itemize}
+
+\subsubsection{Problemstellung}
+Es muss sichergestellt werden, dass beim Erstellen oder Bearbeiten einer Datei sowohl die Pfadstruktur als auch die Inhaltsvalidität berücksichtigt werden.
+
+\subsubsection{Lösungsansätze}
+Zur Unterstützung der Benutzerinteraktion werden Templates generiert und dynamisch ergänzt, je nachdem, ob Constraints definiert sind oder nicht.
+
+\subsubsection{Umsetzung}
+Die Darstellung unterscheidet zwei Modi:
+\begin{itemize}
+	\item \textbf{Ohne Constraints:} Freie Eingabe aller Felder ohne Validierungsvorgaben
+	\item \textbf{Mit Constraints:} Automatisch erzeugte Eingabehilfen und Validierungsvorgaben basierend auf dem Schemamodell
+\end{itemize}
+
+\subsection{Validierung}
+Die Validierung erfolgt durch eine Kombination aus statischer Zod-Validierung und der Prüfung schemabedingter Constraints. Dabei wird sichergestellt, dass alle Pflichtfelder gesetzt und alle referenzierten Objekte gültig sind.
+
+\subsection{Notifikationen}
+Benutzer erhalten Rückmeldung über Systemaktionen sowohl im Explorer als auch im Editor. Beispiele:
+\begin{itemize}
+	\item \textbf{Explorer:} Rückmeldungen bei Erstellen und Löschen von Instanzen
+	\item \textbf{Editor:} Hinweise bei Validierungsergebnissen oder beim Speichern von Änderungen
+\end{itemize}
