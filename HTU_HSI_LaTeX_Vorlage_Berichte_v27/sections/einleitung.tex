@@ -1,31 +1,34 @@
 \section{Einleitung}
-\subsection{Ausgangslage}
-Die Colomba Link GmbH entwickelt IoT-Lösungen für industrielle Anwendungen. Eines ihrer Produkte ist Monidas. Es besteht aus dem Sensorgerät Monidas Datadot ONE als HaaS zur Datenerfassung und der Monidas Plattform als SaaS. Über die Plattform lassen sich Organisationen, Projekte, Benutzer, Geräte sowie zugehörige Überwachungs- und Benachrichtigungsregeln erfassen und verwalten.  
 
-Mit zunehmender Anzahl an Organisationen, Projekten, Sensoren und Regeln steigt der Aufwand für die Verwaltung und Pflege der Daten. Dies betrifft die technische Entwickler, welche die Konfiguration der Sensoren gemeinsam mit Kunden planen und umsetzen.
+\subsection{Ausgangslage und Problemstellung}
+Die modulare Entwicklung von Software wird im Bereich der IoT-Systeme zunehmend relevant. Mit der steigenden Anzahl vernetzter Geräte und wachsenden Datenmengen nimmt die Komplexität zu. Modulare Lösungen gelten als zentraler Bestandteil aktueller IoT Ansätze \cite{IoT}.
 
-Im Rahmen eines Vorprojekts wurde eine alternative Konfigurationsumgebung zur bestehenden Webanwendung entwickelt. Ziel war es, in einem Proof of Concept zu evaluieren, wie sich die Plattformdaten über eine  Exploreransicht in VS Code bearbeiten lassen. Die bestehende hierarchische Struktur der Plattform wurde als virtuelles Filesystem abgebildet. Die Bearbeitung der Daten erfolgte über JSON Files im Editor. Die Umsetzung zeigte, dass sich das Grundkonzept technisch umsetzen lässt, machte jedoch auch Grenzen sichtbar.
+Die Colomba Link GmbH betreibt mit Monidas eine IoT-Plattform für industrielle Anwendungen. Sie verwaltet Organisationen, Projekte, Benutzer, Sensoren sowie zugehörige Überwachungs- und Benachrichtigungsregeln. Mit zunehmender Anzahl an Sensoren und Konfigurationen steigt der Aufwand für technische Mitarbeitende. Sie sind für die Einrichtung und Konfiguration der Sensoren zuständig. Verknüpfungen zwischen Sensoren, Regeln und Benachrichtigungen müssen in mehreren Schritten bearbeitet werden.
+
+Um diesen Prozess zu optimieren, wurde im Rahmen eines Vorprojekts ein Proof of Concept erstellt. Ziel war es, die Machbarkeit einer alternativen Schnittstelle in Form einer VS Code Extension zu evaluieren. Dafür wurde ein Prototyp entwickelt, der die Plattformdaten in einer TreeView darstellt und deren Bearbeitung über einen JSON-Editor ermöglicht.
+ 
+Der Proof of Concept erfüllte die funktionalen Anforderungen. Das Domänenmodell war jedoch fest im Code definiert. Änderungen am Datenmodell erforderten manuelle Anpassungen in der Extension. Diese Einschränkung bildet die Grundlage für die vorliegende Arbeit.
+
+\subsection{Zielsetzung}
 
 
-\subsection{Problemstellung}
-Durch das Vorprojekt wurde klar, dass die Konfigurationsdaten der Monidas-Plattform grundsätzlich über eine hierarchische Baumstruktur in VS Code dargestellt und bearbeitet werden können. Die Umsetzung zeigte, dass sich die vorhandene Webstruktur als virtuelles Filesystem abbilden lässt und sich die einzelnen Einträge über JSON-Files direkt im Editor bearbeiten lassen. Die dabei verwendete Struktur war jedoch fest im Quellcode definiert und basierte nicht auf dem zugrunde liegenden Datenmodell der Plattform.
-
-Diese statische Definition führte dazu, dass jede Anpassung im Datenmodell auch eine Änderung in der Implementierung der Extension erforderte. Neue Felder, veränderte Typen oder zusätzliche Referenzen mussten manuell ergänzt werden. Dadurch entstand ein erhöhter Wartungsaufwand und eine enge Kopplung zwischen Anwendungslogik und Darstellung. Die Exploreransicht konnte nur dann aktualisiert werden, wenn alle Änderungen im Modell vorab bekannt und programmiert worden waren. Dies schränkte die Erweiterbarkeit der Lösung ein und machte sie anfällig für Inkonsistenzen.
-
-Neben der Exploreransicht zeigte sich auch bei der Bearbeitung der JSON-Files im Editor ein Bedarf nach unterstützenden Funktionen. Es fehlten Mechanismen zur Validierung von Referenzen, zur Vorschlagserzeugung gültiger Werte oder zur Navigation zwischen verknüpften Einträgen. Diese Einschränkungen erschwerten die korrekte Eingabe und führten zu Fehlerquellen. Die vorhandene Lösung konnte nicht erkennen, ob ein Feld gültige Werte enthielt, ob eine Referenz korrekt war oder ob Eingaberegeln eingehalten wurden. Technische Nutzer mussten diese Prüfungen manuell durchführen, was den Aufwand erhöhte und die Nutzung erschwerte.
-
-Ein weiteres Problem war die fehlende Trennung zwischen dem Datenmodell, der Dateistruktur und den Bearbeitungsregeln. Da alle Strukturelemente im Code definiert waren, konnte die Anwendung nicht auf veränderte Modelle reagieren. Es war nicht möglich, die Darstellung oder Bearbeitung ohne Quellcodeänderungen an neue Anforderungen anzupassen.
-
-Die bisherige Architektur ist deshalb nicht in der Lage, mit einem dynamischen, schemabasierten System zu arbeiten. Es fehlt ein Mechanismus, der die Struktur und Bearbeitungslogik direkt aus dem Datenbankschema ableitet. Eine generische Lösung, die automatisch auf das definierte Modell reagiert, ist nicht vorhanden. Diese Einschränkungen sollen in der vorliegenden Arbeit adressiert werden. Ziel ist die Entwicklung einer Lösung, die das Datenmodell vollständig berücksichtigt und die Exploreransicht sowie die Bearbeitungslogik daraus ableitet.
 
 \subsection{Fragestellung}
 Das vorliegende Problem mit den oben beschriebenen Einschränkungen führt zu folgenden Fragestellungen:
 
 \begin{itemize}
-  \item Wie kann eine Explorerstruktur dynamisch aus einem schemabasierten Datenmodell erzeugt werden?
-  \item Wie lassen sich Referenzen, Feldabhängigkeiten und Eingaberegeln im Editor prüfen und anzeigen?
-  \item Welche Architektur erlaubt es, ein virtuelles Filesystem und einen Language Server auf Basis eines gemeinsamen Modells umzusetzen?
+  \item Welche Vor- und Nachteile ergeben sich beim Wechsel von einer statisch implementierten VS Code Extension zu einem generischen, schemabasierten Datennavigator mit Dateisystemstruktur? 
+  
+\vspace{0.5em}
+
+  \item Welche Auswirkungen hätte dieser Architekturwechsel auf den im Stand IP5 implementierten Custom TreeView, und welche Vor- und Nachteile hätte ein Wechsel zur Filesystem View?
+
+    \vspace{0.5em}
+  
+  \item Wie kann ein eigener JSON-LSP-Server entwickelt werden, um eine Navigation innerhalb des Datenbank-Navigators zu ermöglichen?
 \end{itemize}
+
+
 
 \subsection{Leserführung}
 Was wird wo behandelt?
