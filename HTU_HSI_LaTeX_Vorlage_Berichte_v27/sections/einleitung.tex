@@ -3,32 +3,36 @@
 \subsection{Ausgangslage und Problemstellung}
 Die modulare Entwicklung von Software wird im Bereich der IoT-Systeme zunehmend relevant. Mit der steigenden Anzahl vernetzter Geräte und wachsenden Datenmengen nimmt die Komplexität zu. Modulare Lösungen gelten als zentraler Bestandteil aktueller IoT Ansätze \cite{IoT}.
 
-Die Colomba Link GmbH betreibt mit Monidas eine IoT-Plattform für industrielle Anwendungen. Sie verwaltet Organisationen, Projekte, Benutzer, Sensoren sowie zugehörige Überwachungs- und Benachrichtigungsregeln. Mit zunehmender Anzahl an Sensoren und Konfigurationen steigt der Aufwand für technische Mitarbeitende. Sie sind für die Einrichtung und Konfiguration der Sensoren zuständig. Verknüpfungen zwischen Sensoren, Regeln und Benachrichtigungen müssen in mehreren Schritten bearbeitet werden.
+Die Colomba Link GmbH betreibt mit Monidas eine IoT-Plattform für industrielle Anwendungen. Sie verwaltet Daten wie Organisationen, Projekte, Benutzer, Sensoren sowie zugehörige Überwachungs- und Benachrichtigungsregeln. Mit zunehmender Anzahl an Sensoren, Regeln und Benachrichtigungen steigt der Aufwand für technische Mitarbeitende. Sie konfigurieren die Sensoren gemeinsam mit dem Kunden und installieren diese Vorort. Die Konfiguration erfolgt über die Webplattform. Sensoren, Regeln und Benachrichtigungen werden einzeln erstellt und über mehrere Eingabemasken miteinander verknüpft.
 
-Um diesen Prozess zu optimieren, wurde im Rahmen eines Vorprojekts ein Proof of Concept erstellt. Ziel war es, die Machbarkeit einer alternativen Schnittstelle in Form einer VS Code Extension zu evaluieren. Dafür wurde ein Prototyp entwickelt, der die Plattformdaten in einer TreeView darstellt und deren Bearbeitung über einen JSON-Editor ermöglicht.
+Um diesen Prozess zu optimieren, wurde im Rahmen eines Vorprojekts ein Proof of Concept erstellt. Ziel war es, die Machbarkeit einer alternativen Schnittstelle in Form einer VS Code Extension zu evaluieren. Dafür wurde ein Prototyp entwickelt, der das Domänenmodell in einer TreeView darstellt und die Bearbeitung über den JSON-Editor ermöglicht.
  
-Der Proof of Concept erfüllte die funktionalen Anforderungen. Das Domänenmodell war jedoch fest im Code definiert. Änderungen am Datenmodell erforderten manuelle Anpassungen in der Extension. Diese Einschränkung bildet die Grundlage für die vorliegende Arbeit.
+Im Proof of Concept war das Domänenmodell hardcodiert. Jede Änderung am Datenmodell erforderte eine Anpassung im Quellcode. Die Validierung und Autovervollständigung im Editor wurden über statische JSON-Schemas realisiert, die vom Standard-JSON-Language-Server verarbeitet wurden. Für weiterführende Funktionen wie Jump to Definition ist ein eigener Language Server erforderlich.
+
 
 \subsection{Zielsetzung}
 
+Ziel dieser Bachelorarbeit ist die Analyse und Umsetzung einer modularen Lösung, welches ein Datenmodell als virtuelles Filesystem darstellt. Die Lösung soll mit verschiedenen Datenstrukturen funktionieren. Bei Änderungen und der Erstellung des Datenmodells ist keine Anpassung des Codes notwendig. Es wird untersucht, wie sich komplexe Strukturen wie in IoT-Systemen damit abbilden lassen. Darauf aufbauend wird ein eigener Language Server entwickelt, der die Bearbeitung der Daten im Editor unterstützt. Er stellt Funktionen wie Autovervollständigung, Validierung und Navigation bereit. 
 
-
-\subsection{Fragestellung}
-Das vorliegende Problem mit den oben beschriebenen Einschränkungen führt zu folgenden Fragestellungen:
+Angesichts der im vorherigen Kapitel beschriebenen Problematik ergeben sich die folgenden Leitfragen, welche im Mittelpunkt dieser Arbeit stehen:
 
 \begin{itemize}
-  \item Welche Vor- und Nachteile ergeben sich beim Wechsel von einer statisch implementierten VS Code Extension zu einem generischen, schemabasierten Datennavigator mit Dateisystemstruktur? 
-  
-\vspace{0.5em}
 
-  \item Welche Auswirkungen hätte dieser Architekturwechsel auf den im Stand IP5 implementierten Custom TreeView, und welche Vor- und Nachteile hätte ein Wechsel zur Filesystem View?
+\item Wie kann ein virtuelles Filesystem in VS Code so umgesetzt werden, dass es sich allein durch ein  Datenmodell steuern lässt und auch komplexe Strukturen unterstützt?
 
-    \vspace{0.5em}
-  
-  \item Wie kann ein eigener JSON-LSP-Server entwickelt werden, um eine Navigation innerhalb des Datenbank-Navigators zu ermöglichen?
+\item Wie kann ein eigener Language Server so entwickelt werden, dass er strukturierte Datenmodelle im Editor unterstützt und Funktionen wie Autovervollständigung, Validierung und Navigation bereitstellt?
 \end{itemize}
 
+Zur Beantwortung dieser Fragen werden Architektur, Umsetzung und Integration der Komponenten analysiert und praktisch umgesetzt.
+
+\subsection{Abgrenzung}
+Im Rahmen dieser Arbeit werden folgende Themenbereiche nicht behandelt. Die entwickelte Lösung wird nicht in das Produktivsystem von Monidas integriert. Es findet keine Anbindung an die bestehende Webplattform oder das Backend statt. Die Evaluation erfolgt ausschliesslich anhand des Datenmodells, ohne produktive Abläufe zu beeinflussen.
+
+Nicht berücksichtigt werden ausserdem Funktionen zur gleichzeitigen Nutzung durch mehrere Benutzer, die Benutzerverwaltung, Authentifizierungsprozesse sowie die Rechtevergabe. Auch Themen wie Datensicherheit, Performanceoptimierung, Datenmigration oder die Anbindung externer Systeme sind nicht Bestandteil dieser Arbeit.
 
 
 \subsection{Leserführung}
-Was wird wo behandelt?
+
+Die vorliegende Bachelorarbeit ist in sechs Themenkomplexe untergliedert. Kapitel 1 umfasst die Einführung in die Arbeit und beschreibt die Ausgangslage, Problemstellung, Zielsetzung sowie die Abgrenzung. Es wird erläutert, weshalb die Weiterentwicklung einer bestehenden VS Code Extension zur Bearbeitung von Konfigurationsdaten im Kontext der Monidas-IoT-Plattform untersucht wird.
+
+Kapitel 2 beschreibt die eingesetzte Datenbank und ihren konkreten Einsatz im Projekt. Es wird aufgezeigt, welche Funktionen die Datenbank bereitstellt und welche zusätzlichen Regeln im Datenbankschema definiert wurden, um das Verhalten der Anwendung zu steuern. Ein Beispielmodell dient als Referenz für die gesamte Arbeit. Zudem wird erläutert, wie das Datenmodell zur Laufzeit analysiert und für das virtuelle Dateisystem und den Editor verfügbar gemacht wird.
