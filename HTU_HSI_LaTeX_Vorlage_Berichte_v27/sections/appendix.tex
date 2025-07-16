@@ -1,15 +1,44 @@
-\begin{appendix} %Anhang
+\begin{appendix} % Anhang
 \section{Ein Anhang}
 
 \subsection{Aufgabenstellung im Originalwortlaut}
 
-
 \subsection{Gesamtübersicht}
-
 
 \subsection{Berechnungen / Resultate Umfrage}
 
-
 \subsection{Tests – Screenshots}
+
+\subsection{Code-Beispiele} 
+Die nachfolgenden Code-Beispiele zeigen ... 
+
+\subsubsection{Datenbankabfrage} 
+\label{sec:selva-operationen}
+
+\lstdefinestyle{customtypescript}{
+  belowcaptionskip=1\baselineskip,
+  breaklines=true,
+  frame=single,
+  xleftmargin=\parindent,
+  numbers=left,
+  language=JavaScript,
+  showstringspaces=false,
+  basicstyle=\footnotesize\ttfamily\color{black},
+  keywordstyle=\bfseries\color{black},
+  commentstyle=\itshape\color{gray!60!black},
+  identifierstyle=\color{black},
+  stringstyle=\color{gray!20!black},
+  numberstyle=\tiny\color{gray!50},
+  rulecolor=\color{gray!70},
+  backgroundcolor=\color{gray!10},
+}
+
+\lstinputlisting[caption={Query eines Sensors mit Standort und Schwellenwerten}, style=customtypescript]{listings/sensor_query.ts}
+
+
+\subsubsection{Based-Operationen}
+\label{sec:based-operationen}
+Die nachfolgenden Beispiele zeigen die Nutzung von Based-Queries und Functions zur Interaktion mit der Selva-Datenbank.
+
 
 \end{appendix}

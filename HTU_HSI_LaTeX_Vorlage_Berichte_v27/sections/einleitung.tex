@@ -1,38 +1,47 @@
 \section{Einleitung}
 
 \subsection{Ausgangslage und Problemstellung}
-Die modulare Entwicklung von Software wird im Bereich der IoT-Systeme zunehmend relevant. Mit der steigenden Anzahl vernetzter Geräte und wachsenden Datenmengen nimmt die Komplexität zu. Modulare Lösungen gelten als zentraler Bestandteil aktueller IoT Ansätze \cite{IoT}.
+Die modulare Softwareentwicklung gewinnt im Bereich der IoT-Systeme zunehmend an Bedeutung. Mit der steigenden Anzahl vernetzter Geräte und wachsender Datenmengen erhöhen sich sowohl Komplexität als auch Entwicklungsaufwand. Modulare Softwarelösungen ermöglichen dabei eine flexible und ressourcenschonende Anpassung an neue Anforderungen und gelten deshalb als Bestandteil moderner IoT-Ansätze \cite{IoT}.
 
-Die Colomba Link GmbH betreibt mit Monidas eine IoT-Plattform für industrielle Anwendungen. Sie verwaltet Daten wie Organisationen, Projekte, Benutzer, Sensoren sowie zugehörige Überwachungs- und Benachrichtigungsregeln. Mit zunehmender Anzahl an Sensoren, Regeln und Benachrichtigungen steigt der Aufwand für technische Mitarbeitende. Sie konfigurieren die Sensoren gemeinsam mit dem Kunden und installieren diese Vorort. Die Konfiguration erfolgt über die Webplattform. Sensoren, Regeln und Benachrichtigungen werden einzeln erstellt und über mehrere Eingabemasken miteinander verknüpft.
+% Die Colomba Link GmbH entwickelt und betreibt mit Monidas eine IoT-Plattform für industrielle Anwendungen.  Die Monidas Platform bietet verschiedenste Funktionalitäten sowohl für den IoT-Spezialisten wie auch für Endnutzer. Sie verwaltet Daten wie Organisationen, Projekte, Benutzer, Sensoren sowie zugehörige Überwachungs- und Benachrichtigungsregeln. Mit zunehmender Anzahl an Sensoren steigt der Aufwand für technische Mitarbeitende. Sie konfigurieren die Sensoren gemeinsam mit dem Kunden und installieren diese Vorort. Die Konfiguration erfolgt über die Webplattform. Sensoren, Regeln und Benachrichtigungen werden einzeln erstellt und über mehrere Eingabemasken miteinander verknüpft.
 
-Um diesen Prozess zu optimieren, wurde im Rahmen eines Vorprojekts ein Proof of Concept erstellt. Ziel war es, die Machbarkeit einer alternativen Schnittstelle in Form einer VS Code Extension zu evaluieren. Dafür wurde ein Prototyp entwickelt, der das Domänenmodell in einer TreeView darstellt und die Bearbeitung über den JSON-Editor ermöglicht.
+Die Colomba Link GmbH entwickelt und betreibt mit Monidas eine IoT-Plattform, welche industrielle Anlagen vernetzt, deren Daten verwaltet und auswertet. Die Plattform richtet sich an IoT-Spezialisten und Endnutzer und umfasst Funktionen von der Einrichtung der Sensoren bis hin zur automatisierten Überwachung und Alarmierung. Technische Mitarbeitende konfigurieren die Sensoren kundenspezifisch und nehmen diese anschliessend über eine Weboberfläche in Betrieb. Komponenten wie Sensoren, Regeln und Benachrichtigungen werden aktuell noch einzeln erstellt und über mehrere Eingabemasken miteinander verknüpft. Mit zunehmender Anzahl von Sensoren steigt dadurch der Aufwand für das technische Personal. Aufgrund begrenzter Entwicklungsressourcen des Startups wird daher eine generische Implementierung angestrebt, die den Aufwand bei neuen Anforderungen reduziert und so langfristig die Kundenzufriedenheit erhöht.
+
+
+% Um diesen Prozess zu optimieren, wurde im Rahmen eines Vorprojekts ein Proof of Concept erstellt. Ziel war es, die Machbarkeit einer alternativen Schnittstelle in Form einer VS Code Extension zu evaluieren. Dafür wurde ein Prototyp entwickelt, der das Domänenmodell in einer TreeView darstellt und die Bearbeitung über den JSON-Editor ermöglicht.
  
-Im Proof of Concept war das Domänenmodell hardcodiert. Jede Änderung am Datenmodell erforderte eine Anpassung im Quellcode. Die Validierung und Autovervollständigung im Editor wurden über statische JSON-Schemas realisiert, die vom Standard-JSON-Language-Server verarbeitet wurden. Für weiterführende Funktionen wie Jump to Definition ist ein eigener Language Server erforderlich.
+% Im Proof of Concept war das Domänenmodell hardcodiert. Jede Änderung am Datenmodell erforderte eine Anpassung im Quellcode. Die Validierung und Autovervollständigung im Editor wurden über statische JSON-Schemas realisiert, die vom Standard-JSON-Language-Server verarbeitet wurden. Für weiterführende Funktionen wie Jump to Definition ist ein eigener Language Server erforderlich.
 
+Um den Entwicklungsaufwand bei der Erstellung der Benutzeroberfläche zu reduzieren, wurde im Vorprojekt IP5 „Entwicklung einer VS Code Extension zur Verwaltung von IoT-Daten in der Monidas-Plattform“ evaluiert, ob bestehende Funktionsblöcke von Visual Studio Code mittels einer Extension genutzt werden können. Der entwickelte Proof of Concept stellt die Daten sowie die zugehörigen JSON-Schema-Konfigurationen der Monidas-Plattform übersichtlich in einer TreeView dar. Die Bearbeitung der einzelnen Entitäten erfolgt dabei direkt über den standardmässig in VS Code integrierten JSON-Editor. Ziel des Prototyps war es, zu untersuchen, ob auf diese Weise auf die Entwicklung eines separaten Web-Interfaces zur Verwaltung der Daten verzichtet werden kann. Im Prototyp von IP5 waren die dargestellten Daten und JSON-Schemas jedoch noch hardcodiert. Validierung und Autovervollständigung erfolgten über statische JSON-Schemas, welche vom Standard-JSON-Language-Server von VS Code verarbeitet wurden. 
 
 \subsection{Zielsetzung}
+Basierend auf den Erkenntnissen und Einschränkungen des Vorprojekts IP5 sollen in dieser Bachelorarbeit die hardcodierten Komponenten reduziert werden. Ziel ist die Analyse und Umsetzung einer modularen Lösung, welche das Datenmodell als virtuelles Filesystem bereitstellt, um Anpassungen oder Erweiterungen am Datenmodell ohne Änderungen am Quellcode zu ermöglichen.
 
-Ziel dieser Bachelorarbeit ist die Analyse und Umsetzung einer modularen Lösung, welches ein Datenmodell als virtuelles Filesystem darstellt. Die Lösung soll mit verschiedenen Datenstrukturen funktionieren. Bei Änderungen und der Erstellung des Datenmodells ist keine Anpassung des Codes notwendig. Es wird untersucht, wie sich komplexe Strukturen wie in IoT-Systemen damit abbilden lassen. Darauf aufbauend wird ein eigener Language Server entwickelt, der die Bearbeitung der Daten im Editor unterstützt. Er stellt Funktionen wie Autovervollständigung, Validierung und Navigation bereit. 
+Die entwickelte Lösung soll mit verschiedenen Datenstrukturen kompatibel sein und insbesondere die Abbildung komplexer IoT-Strukturen unterstützen. Dabei wird das spezifische Monidas-Datenmodell zunächst durch ein allgemeineres, in Kapitel 2 definiertes Modell ausgetauscht. Zur Validierung und Überprüfung der angestrebten Generalisierbarkeit wird am Ende der Arbeit das ursprüngliche Monidas-Datenmodell exemplarisch wieder integriert. Zusätzlich wird ein eigener Language Server implementiert, welcher erweiterte Funktionen wie Validierung, Autovervollständigung und Navigation im Editor bereitstellt und somit die Bearbeitung der Daten  unterstützt.
 
-Angesichts der im vorherigen Kapitel beschriebenen Problematik ergeben sich die folgenden Leitfragen, welche im Mittelpunkt dieser Arbeit stehen:
+Aus diesen Zielen ergeben sich folgende Leitfragen, die im Mittelpunkt der Arbeit stehen:
 
 \begin{itemize}
 
-\item Wie kann ein virtuelles Filesystem in VS Code so umgesetzt werden, dass es sich allein durch ein  Datenmodell steuern lässt und auch komplexe Strukturen unterstützt?
+\item Wie lässt sich ein virtuelles Filesystem in VS Code so realisieren, dass es ausschliesslich über ein Datenmodell gesteuert wird und flexibel mit komplexen, modularen IoT-Datenstrukturen umgehen kann?
 
-\item Wie kann ein eigener Language Server so entwickelt werden, dass er strukturierte Datenmodelle im Editor unterstützt und Funktionen wie Autovervollständigung, Validierung und Navigation bereitstellt?
+\item Welche Anforderungen und Architekturentscheidungen sind nötig, um einen generischen Language Server zu entwickeln, der unterschiedliche Datenmodelle unterstützt und dabei Funktionen wie Autovervollständigung, Validierung und Navigation ermöglicht?
+
 \end{itemize}
 
-Zur Beantwortung dieser Fragen werden Architektur, Umsetzung und Integration der Komponenten analysiert und praktisch umgesetzt.
+% Zur Beantwortung dieser Fragen werden Architektur und Lösungsansätze analysiert und in der praktischen Umsetzung überprüft.
 
 \subsection{Abgrenzung}
-Im Rahmen dieser Arbeit werden folgende Themenbereiche nicht behandelt. Die entwickelte Lösung wird nicht in das Produktivsystem von Monidas integriert. Es findet keine Anbindung an die bestehende Webplattform oder das Backend statt. Die Evaluation erfolgt ausschliesslich anhand des Datenmodells, ohne produktive Abläufe zu beeinflussen.
+%Im Rahmen dieser Arbeit werden folgende Themenbereiche nicht behandelt. Die entwickelte Lösung wird nicht in das Produktivsystem von Monidas integriert. Es findet keine Anbindung an die bestehende Webplattform oder das Backend statt. Die Evaluation erfolgt ausschliesslich anhand des Datenmodells, ohne produktive Abläufe zu beeinflussen.
 
-Nicht berücksichtigt werden ausserdem Funktionen zur gleichzeitigen Nutzung durch mehrere Benutzer, die Benutzerverwaltung, Authentifizierungsprozesse sowie die Rechtevergabe. Auch Themen wie Datensicherheit, Performanceoptimierung, Datenmigration oder die Anbindung externer Systeme sind nicht Bestandteil dieser Arbeit.
+% Nicht berücksichtigt werden ausserdem Funktionen zur gleichzeitigen Nutzung durch mehrere Benutzer, die Benutzerverwaltung, Authentifizierungsprozesse sowie die Rechtevergabe. Auch Themen wie Datensicherheit, Performanceoptimierung, Datenmigration oder die Anbindung externer Systeme sind nicht Bestandteil dieser Arbeit.
 
+Im Rahmen dieser Arbeit werden einige Themenbereiche bewusst ausgeklammert. Die entwickelte Lösung wird nicht in das Produktivsystem von Monidas integriert, und es erfolgt keine Anbindung an die bestehende Platform. Die Evaluation der Lösung basiert ausschliesslich auf dem Datenmodell.
+
+Ebenfalls nicht berücksichtigt werden Funktionen zur Mehrbenutzernutzung, zur Benutzerverwaltung sowie zu Authentifizierungs- und Autorisierungsprozessen. Themen wie Datensicherheit, Performanceoptimierung oder Datenmigration liegen ebenfalls ausserhalb des Umfangs dieser Bachelorarbeit.
 
 \subsection{Leserführung}
 
-Die vorliegende Bachelorarbeit ist in sechs Themenkomplexe untergliedert. Kapitel 1 umfasst die Einführung in die Arbeit und beschreibt die Ausgangslage, Problemstellung, Zielsetzung sowie die Abgrenzung. Es wird erläutert, weshalb die Weiterentwicklung einer bestehenden VS Code Extension zur Bearbeitung von Konfigurationsdaten im Kontext der Monidas-IoT-Plattform untersucht wird.
+Diese Bachelorarbeit ist in sechs Kapitel gegliedert. Kapitel 1 führt in die Arbeit ein und beschreibt die Ausgangslage, Problemstellung, Zielsetzung sowie deren Abgrenzung. Dabei wird erläutert, weshalb eine modulare Weiterentwicklung der bestehenden VS-Code-Extension zur Verwaltung von Konfigurationsdaten im Kontext der Monidas-IoT-Plattform untersucht wird.
 
-Kapitel 2 beschreibt die eingesetzte Datenbank und ihren konkreten Einsatz im Projekt. Es wird aufgezeigt, welche Funktionen die Datenbank bereitstellt und welche zusätzlichen Regeln im Datenbankschema definiert wurden, um das Verhalten der Anwendung zu steuern. Ein Beispielmodell dient als Referenz für die gesamte Arbeit. Zudem wird erläutert, wie das Datenmodell zur Laufzeit analysiert und für das virtuelle Dateisystem und den Editor verfügbar gemacht wird.
+Kapitel 2 stellt die verwendete Datenbank sowie deren konkreten Einsatz im Projekt vor. Es beschreibt die wichtigsten Funktionen der Datenbank und erläutert zusätzliche Regeln, die im Datenbankschema definiert werden, um das Anwendungsverhalten zu steuern. Ein beispielhaftes Datenmodell dient dabei als Referenz für die weitere Arbeit. Abschliessend wird dargestellt, wie das Datenmodell zur Laufzeit analysiert und für das virtuelle Filesystem sowie den Editor bereitgestellt wird.

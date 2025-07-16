@@ -1,0 +1,21 @@
+Sensor: {
+    fields: {
+        name: string,
+        isActive: boolean,
+        location: reference['Location'],
+        thresholds: references['Threshold'],
+    },
+},
+Location: {
+    fields: {
+        description: string,
+        latitude: number,
+        longitude: number,
+    },
+},
+Threshold: {
+    fields: {
+        limit: number,
+        unit: string,
+    },
+}
