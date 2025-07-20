@@ -1,27 +1,27 @@
-\section{Technologien, Datenmodell und Umsetzung}
-Dieses Kapitel erläutert zunächst die verwendeten Technologien, beschreibt anschliessend das definierte Datenmodell und zeigt abschliessend dessen Umsetzung in der entwickelten Lösung.
+\section{Grundlagen}
+Dieses Kapitel erläutert die wesentlichen technologischen und konzeptionellen Grundlagen der entwickelten Lösung. Zunächst werden die eingesetzten Technologien vorgestellt, die eng mit dem bestehenden Technologie-Stack der Monidas-Plattform verknüpft sind. Anschliessend folgt die Erläuterung des Domänenmodells, das die konzeptionelle Basis für die Umsetzung bildet. Damit schafft dieses Kapitel die Voraussetzungen, um die technischen Entscheidungen und Implementierungen in den nachfolgenden Kapiteln nachvollziehen zu können.
 
 \subsection{Technologien}
-Für die Realisierung des virtuellen Filesystems und die Entwicklung des Language Servers kommen Technologien zum Einsatz, welche sich eng an den bestehenden technischen Stack der Monidas-Plattform anlehnen. Die Wahl der eingesetzten Technologien erfolgte in Abstimmung mit dem Auftraggeber, um eine spätere Integration sowie Wartbarkeit und Erweiterbarkeit der entwickelten Lösung sicherzustellen. Nachfolgend werden die ausgewählten Technologien näher vorgestellt. 
+Für die Umsetzung des virtuellen Filesystems und des Language Servers werden Technologien eingesetzt, die gezielt auf die vorhandene Infrastruktur der Monidas-Plattform abgestimmt sind. Diese Technologien wurden in Abstimmung mit dem Auftraggeber ausgewählt, um Integration, Wartbarkeit und Erweiterbarkeit zu gewährleisten. Im Folgenden werden ausschliesslich jene Aspekte erläutert, die für das Verständnis und die Realisierung der in dieser Arbeit entwickelten Lösung relevant sind.
 
 %Zum Einsatz kommen dabei die Graphdatenbank Selva und das JavaScript-Framework Based, welche nachfolgend näher erläutert werden.
 
-\subsubsection{Selva}
-Dieses Unterkapitel beschreibt die im Projekt eingesetzte Graphdatenbank \textit{Selva}\footnote{\url{https://github.com/atelier-saulx/selva}}. Im Folgenden werden das zugrundeliegende Datenbankschema, die verwendete Query DSL sowie die API zur Interaktion mit der Datenbank vorgestellt.
+\subsubsection*{Selva}
+Als Datenbanktechnologie kommt die Graphdatenbank \textit{Selva}\footnote{\url{https://github.com/atelier-saulx/selva}} zum Einsatz. 
 
 %Selva wurde aufgrund ihrer Unterstützung für komplexe Graphstrukturen und Echtzeit-Abfragen ausgewählt, wodurch sie sich gut für die Anforderungen der Monidas-Plattform eignet.
 
 \paragraph{Datenbankschema}
-In Selva wird das Datenmodell über ein Schema definiert. Dieses Schema legt fest, welche Objekttypen existieren, über welche Felder diese verfügen und welche Datentypen dabei verwendet werden dürfen. Neben einfachen Datentypen wie \texttt{string}, \texttt{int} und \texttt{boolean} unterstützt Selva komplexe Beziehungstypen wie \texttt{reference} (für 0:1-Beziehungen) und \texttt{references} (für 0:n-Beziehungen).
+Selva definiert das Datenmodell mithilfe eines Schemas, welches Objekttypen, deren Felder sowie erlaubte Datentypen beschreibt. Unterstützt werden einfachen Datentypen wie \texttt{string}, \texttt{int} und \texttt{boolean} sowie komplexere Beziehungstypen wie \texttt{reference} (für 0:1-Beziehungen) und \texttt{references} (für 0:n-Beziehungen).
 
-Das Schema führt grundlegende Validierungen auf Datentypen-Ebene durch. Beispielsweise prüft Selva automatisch, ob Werte eines String-Feldes tatsächlich Zeichenketten sind oder ob Felder vom Typ email einem gültigen E-Mail-Format entsprechen.
+Auf Datentyp-Ebene führt Selva grundlegende Validierungen automatisch durch. Beispielsweise prüft Selva, ob die Werte eines String-Feldes tatsächlich Zeichenketten sind oder ob Felder vom Typ \texttt{email} ein gültiges E-Mail-Format besitzen.
 
-Weitergehende Anforderungen wie Pflichtfelder (notNull), Pfadeinschränkungen (existsIn), bidirektionale Verknüpfungen (bidirectional) oder Erstellungseinschränkungen (canCreate) werden hingegen nicht automatisch unterstützt. Diese Anforderungen werden im Rahmen der Arbeit selbst definiert und validiert. Eine detaillierte Erläuterung dieser definierten Constraints erfolgt in Abschnitt \ref{sec:schema-umsetzung}.
+Weitergehende Anforderungen, wie Pflichtfelder, Pfadeinschränkungen, bidirektionale Verknüpfungen oder Einschränkungen bei der Erstellung neuer Objekte, werden von Selva nicht standardmässig unterstützt. Diese Constraints sind jedoch notwendig, um eine konsistente und fehlerfreie Verwaltung komplexer Datenstrukturen sicherzustellen. Deshalb wurden diese im Rahmen dieser Arbeit eigenständig definiert und implementiert. Eine detaillierte Erläuterung hierzu erfolgt in Abschnitt \ref{Constraints}.
 
 %; deren konkrete Umsetzung in der Implementierung des virtuellen Filesystems wird dort ebenfalls beschrieben.
 \pagebreak
 
-Ein vereinfachtes Schema könnte wie folgt aussehen:
+Ein vereinfachtes Schema zur Verdeutlichung könnte wie folgt aussehen:
 
 \lstdefinestyle{customtypescript}{
   belowcaptionskip=1\baselineskip,
@@ -42,117 +42,68 @@ Ein vereinfachtes Schema könnte wie folgt aussehen:
 }
 
 \lstinputlisting[
-  caption={Beispiel für ein Selva-Datenbankschema}, 
+  caption={Beispiel eines Selva-Datenbankschemas}, 
   label={lst:schema_beispiel},
   style=customtypescript
 ]{listings/schema_bsp.json}
 
 
-Im dargestellten Beispiel sind drei Objekttypen definiert: \texttt{Sensor}, \texttt{Location} und \texttt{Threshold}. Die Felder bilden sowohl einfache Attribute, beispielsweise Name und geografische Angaben, als auch Beziehungen zwischen den Objekten ab. Beispielsweise besitzt der \texttt{Sensor} eine eindeutige Standortzuweisung (\texttt{location}) und mehrere Grenzwerte (\texttt{thresholds}). 
+Im gezeigten Beispiel werden drei Objekttypen definiert: \texttt{Sensor}, \texttt{Location} und \texttt{Threshold}. Neben einfachen Attributen wie Name oder geografischen Angaben umfasst das Schema auch komplexe Beziehungsfelder. So besitzt der Sensor eine eindeutige Standortzuweisung sowie mehrere Grenzwerte.
 
 %Die konkrete Verwendung und Umsetzung des Schemas wird in Abschnitt \ref{sec:schema-umsetzung} beschrieben.
 
 \paragraph{Query Domain Specific Language (DSL)}
-Um gezielt Daten abzufragen und zu bearbeiten, nutzt Selva eine eigene Query DSL. Diese DSL erlaubt die Definition von Abfragen über JavaScript-Objekte und legt gleichzeitig die Struktur der abgefragten Daten fest.
+Für Abfragen und Datenmanipulationen bietet Selva eine eigene Query DSL, die auf JavaScript-Objekten basiert. Diese DSL definiert, welche Daten abgefragt und wie diese präsentiert werden sollen. Dabei unterscheidet Selva zwischen:
 
-tbd alias 
-
-%Selva ermöglicht es, Objekten zusätzlich zu ihrer ID einen lesbaren Alias zuzuweisen. Dies erleichtert den Zugriff, da Datenbankobjekte damit direkt über verständliche Namen angesprochen werden können. Die konkrete Nutzung und Verwaltung der Aliase in dieser Arbeit wird in Abschnitt XY genauer erläutert.
-
-Dabei unterscheidet die Query DSL zwischen Feldern und Operatoren:
-
-\begin{itemize} \item \textbf{Felder} repräsentieren gespeicherte Eigenschaften von Objekten. Mittels einer Query wird festgelegt, welche Eigenschaften im Ergebnis erscheinen sollen. Dabei können einfache Merkmale (wie Name oder Status eines Sensors) und auch komplexe, verknüpfte Informationen (etwa Standort oder Schwellenwerte) abgefragt werden.
-
-\item \textbf{Operatoren} hingegen sind Anweisungen oder Befehle, die bestimmen, wie diese Daten im Ergebnis präsentiert werden (z. B. sortieren, filtern).
+\begin{itemize} \item \textbf{Felder}, welche gespeicherte Eigenschaften repräsentieren und einfache sowie komplexe, verknüpfte Daten umfassen.
+\item \textbf{Operatoren}, welche bestimmen, wie die Daten sortiert oder gefiltert werden. Dazu gehört auch der Operator \textbf{alias}, mit dem Objekte direkt über ihren Alias statt über ihre interne ID abgefragt werden können.
 \end{itemize}
+
+Im Anhang \ref{sec:selva-operationen} befinden sich konkrete Beispiele zur Nutzung der Query DSL, darunter auch die Verwendung eines Alias.
 
 \paragraph{Selva-API}
 Zur Interaktion zwischen Anwendung und Datenbank bietet Selva eine eigene API, welche grundlegende Operationen zur Datenmanipulation und -abfrage bereitstellt. Dazu gehören das Abfragen von Daten (\texttt{get}), das Erstellen und Aktualisieren von Objekten (\texttt{set}), das Löschen von Daten (\texttt{delete}) sowie das Beobachten von Datenänderungen in Echtzeit (\texttt{observe}). Weitere Funktionen der API ermöglichen das Abfragen (\texttt{getSchema}) und Anpassen (\texttt{updateSchema}) des Datenbankschemas, das Erzeugen eindeutiger IDs (\texttt{id}) sowie die Bestimmung des Objekttyps auf Basis einer ID (\texttt{getTypeFromId}).
 
 Die praktische Verwendung aller genannten Operationen wird im Anhang \ref{sec:based-operationen} anhand konkreter Code-Beispiele gezeigt. Diese Operationen wurden für die Implementierung der im Rahmen dieser Arbeit entwickelten Funktionalitäten eingesetzt.
 
-\subsubsection{Based}
-Ergänzend zu Selva wird das JavaScript-Framework \textit{Based}\footnote{\url{https://github.com/atelier-saulx/based}} verwendet. Während Selva die direkte Speicherung und Abfrage der Daten verantwortet, bietet Based eine API zur Abstraktion und Vereinfachung der Kommunikation mit der Datenbank. Anwendungen interagieren ausschliesslich über Based, welches intern die benötigten Operationen auf Selva ausführt.
+\subsubsection*{Based}
+tbd
+https://github.com/atelier-saulx/based/blob/v3/packages/client/docs/get-started.md
+%Zur weiteren Abstraktion der Datenbankkommunikation kommt ergänzend zu Selva das JavaScript Framework Based\footnote{\url{https://github.com/atelier-saulx/based}} zum Einsatz. Dieses stammt vom selben Entwicklungsteam wie Selva und ist somit gezielt auf deren Integration ausgelegt.
 
-\begin{itemize} 
-\item \textbf{Queries} dienen dem lesenden Zugriff auf gespeicherte Daten und ermöglichen sowohl einmalige Abfragen als auch sogenannte \textit{Subscriptions}. Mittels Subscriptions können Anwendungen auf Datenänderungen unmittelbar reagieren.
+%Based stellt dazu zwei verschiedene Operationsarten bereit:
+%\begin{itemize} 
+%\item \textbf{Queries} ermöglichen den lesenden Zugriff auf Daten und unterstützen neben einmaligen Abfragen auch  Subscriptions.
 
-\item \textbf{Functions} hingegen führen schreibende Operationen aus, beispielsweise das Erstellen, Aktualisieren oder Löschen von Daten. Zusätzlich können Functions serverseitige Logik enthalten. Dadurch lassen sich Validierungen, Prüfungen oder komplexere Abläufe direkt auf dem Server umsetzen, bevor Daten gespeichert werden.
-\end{itemize}
+%\item \textbf{Functions} hingegen führen schreibende Operationen aus, beispielsweise das Erstellen, Aktualisieren oder Löschen von Daten. 
 
+%Zusätzlich können Functions serverseitige Logik enthalten. Dadurch lassen sich Validierungen, Prüfungen oder komplexere Abläufe direkt auf dem Server umsetzen, bevor Daten gespeichert werden.
+%\end{itemize}
 
+%Die konkrete Anwendung von Based wird ebenfalls anhand praxisnaher Beispiele im Anhang \ref{sec:selva-operationen} dargestellt.
 
-Die konkrete Verwendung der Queries und Functions sowie deren Zusammenspiel mit den zuvor beschriebenen Selva-Datenbankoperationen werden anhand exemplarischer Code-Beispiele im Anhang \ref{sec:selva-operationen} dargestellt.
-
-\paragraph{VS Code}
+\subsubsection*{VS Code}
 VS Code dient als Plattform für zwei getrennte Extensions. Für das virtuelle Filesystem kommt die \textit{FileSystemProvider}-API\footnote{\url{https://code.visualstudio.com/api/references/vscode-api\#FileSystemProvider}} zum Einsatz. Die API stellt Funktionen bereit, um ein eigenes Filesystem mit Dateien und Ordnern über URI-Pfade zu verwalten. Dazu gehören das Erstellen, Löschen und Lesen von Inhalten. 
 
 Für die Editorunterstützung wird das Language Server Protocol verwendet. Die Integration erfolgt nach den Vorgaben des offiziellen \textit{Language Server Extension Guide}\footnote{\url{https://code.visualstudio.com/api/language-extensions/language-server-extension-guide}}.
 
-\textbf{tbd wird inhaltlich noch angepasst}
+tbd wird inhaltlich noch angepasst
 
-\paragraph{Node.js / TypeScript}
+\subsubsection*{Node.js / TypeScript}
 tbd
 
 \pagebreak
-\subsection{Architekturübersicht}
-Nach der Vorstellung der verwendeten Technologien beschreibt dieser Abschnitt den Aufbau der Gesamtarchitektur. Für das Lesen der Arbeit stellt die Übersicht eine Orientierungshilfe dar, um die technische Gliederung der Lösung von Beginn an nachvollziehbar zu machen.
-
-Die Lösung ist modular aufgebaut und besteht aus zwei getrennten Extensions. Eine ist für das virtuelle Filesystem zuständig, die andere für die Editorunterstützung. Der Editor ist die Schnittstelle, über die die Editorunterstützung auf die Inhalte des virtuellen Filesystem zugreift.
-
-...tbd
-
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\linewidth]{Arch.png}
-  \caption{Architekturübersicht der implementierten Lösung}
-  \label{fig:arch_modell}
-\end{figure}
 
 \subsection{Domänenmodell}
-Im Rahmen der Arbeit kommt ein Domänenmodell aus dem Bereich E-Commerce zum Einsatz. Es dient als Beispiel und kann durch andere Modelle ersetzt werden, ohne dass die Funktionsweise der Lösung angepasst werden muss.
-
-
-\subsubsection*{Constraints zur Steuerung des Anwendungsverhaltens}
-Die Datenbank bietet keine nativen Mechanismen zur Durchsetzung von Modellregeln wie Kardinalitäten oder Referenzbeschränkungen. Um das Verhalten der Anwendung dennoch gezielt zu steuern, wurden im Schema drei Constraints definiert.
-
-\begin{itemize}
- \item \textbf{notNull}: Markiert ein Feld als erforderlich.
-  \item \textbf{existsIn}: Erlaubt nur Verweise auf Objekte eines bestimmten Typs, die an einem definierten Pfad gespeichert sind.
-  \item \textbf{canCreate}: Erlaubt das Erstellen von untergeordneten Objekten.
-  \item \textbf{bidirectional}: Erstellt automatisch eine Rückverknüpfung.
-\end{itemize}
-
-Standardmässig gelten folgende Regeln, wenn keine Constraints im Schema definiert werden: 
-
-\begin{itemize}
-  \item \textbf{notNull}: \texttt{false}
-  \item \textbf{existsIn}: \texttt{all}
-  \item \textbf{canCreate}: \texttt{true}
-  \item \textbf{bidirectional}: \texttt{false}
-\end{itemize}
-
-Diese Regeln ermöglichen es, modelllogische Konzepte wie Komposition, Aggregation oder Assoziationen im Schemas zudefinieren.  
-
-\subsubsection*{Entitäten im Modell}
-Das Domänenmodell umfasst folgende Entitäten:
-
-\paragraph{Customer}
-Customer ist ein Kunde mit den Feldern \texttt{firstname}, \texttt{lastname}, \texttt{emailAddress} und \texttt{slug}.
-
-
+Zur einheitlichen Darstellung und besseren Verständlichkeit der entwickelten Lösung wurde für diese Arbeit ein Domänenmodell aus dem Bereich E-Commerce definiert. Dieses Modell bildet ein beispielhaftes Szenario ab, das für die nachfolgenden Kapitel als Referenz dient. Die entwickelte Lösung ist jedoch nicht auf dieses spezielle Modell beschränkt, sondern kann auf beliebige andere Domänenmodelle übertragen werden, ohne dass Änderungen an der Kernfunktionalität nötig sind. Im diesem Abschnitt wird das erstellte Domänenmodell basierend auf der UML-Darstellung in Abbildung~\ref{fig:uml_modell} erläutert.
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=\linewidth]{UML.png}
-  \caption{UML-Modell mit Constraints zur Referenzierung und Erstellung}
+  \caption{UML-Darstellung des für diese Arbeit definierten Domänenmodells.}
   \label{fig:uml_modell}
 \end{figure}
 
+Das definierte Domänenmodell besteht aus den Entitäten \texttt{Customer}, \texttt{Order}, \texttt{Address}, \texttt{Product} und \texttt{LineItem}. Zur eindeutigen Identifikation im virtuellen Filesystem verfügt jede Entität zwingend über das Attribut \texttt{slug}. Der \texttt{slug} ist ein menschenlesbarer Bezeichner, der zur Generierung eindeutiger URI-Pfade verwendet wird. Wird beispielsweise ein Kunde mit dem \texttt{slug} „max“ erstellt, entsteht daraus der eindeutige URI-Pfad \texttt{/Customers/max}. Die konkrete Bedeutung und Nutzung des Attributs \texttt{slug} im Kontext des virtuellen Filesystems wird in Abschnitt~\ref{vfs-umsetzung} detailliert beschrieben.
 
-\subsection{Umsetzung als Datenbankschema}
-\label{sec:schema-umsetzung}
-
-
-\subsection{Analyse und Nutzung zur Laufzeit}
+tbd Beschreibung des UML

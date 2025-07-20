@@ -13,6 +13,7 @@ Die Herausforderung besteht darin, komplexe Referenzbeziehungen und potenzielle 
 Zur Lösung wird eine Tiefensuche mit Zykluserkennung eingesetzt. Dabei werden Root-Typen ermittelt und gültige Pfadsegmente anhand der `UriTree`-Struktur berechnet.
 
 \subsubsection{Umsetzung}
+\label{vfs-umsetzung}
 Die Baumstruktur wird dynamisch zur Laufzeit generiert. Zyklische Verweise werden durch Alias-Referenzen dargestellt, um Redundanzen und Endlosschleifen zu vermeiden.
 
 \subsection{Editor}

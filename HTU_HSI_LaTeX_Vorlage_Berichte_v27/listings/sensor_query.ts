@@ -1,18 +1,21 @@
 
-const sensorData = await based.db.default.get({
+const sensorData = await get({
   $alias: 'sensor-001',
-  fields: {
-    name: true,
-    isActive: true,
-    location: {
-      description: true,
-      latitude: true,
-      longitude: true,
-    },
-    thresholds: {
-      $list: {},
-      limit: true,
-      unit: true,
+  name: true,
+  isActive: true,
+  location: {
+    description: true,
+    latitude: true,
+    longitude: true,
+  },
+  thresholds: {
+    limit: true,
+    unit: true,
+    $list: {
+      $sort: {
+        $field: 'slug',
+        $order: 'asc',
+      },
     },
   },
 });
