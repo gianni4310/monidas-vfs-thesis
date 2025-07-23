@@ -1,5 +1,5 @@
 \documentclass[final]{fhnwreport}         %[mode] = draft or final
-\input{fhnwheader}                        %loads all packages, definitions and settings	
+\input{fhnwheader}            %loads all packages, definitions and settings
 
 %%%%% Logo: Hocvhschule HTU oder HSI, Sprache DE oder EN:
 %\newcommand{\logofilename}{FHNW_HTU_EN}
@@ -10,6 +10,11 @@
 \usepackage[style=ieee,urldate=comp,backend=biber]{biblatex}
 %\usepackage[style=apa,urldate=comp,backend=biber]{biblatex}
 %%%%%
+
+\usepackage[automake]{glossaries}
+\input{tex/glossar.tex}
+\makeglossaries
+
 \addbibresource{literature/beispiel_bib.bib}
 											
 \title{Code Assist und Navigation für IoT-Konfigurationen
@@ -52,7 +57,8 @@ Projektnummer				&    $25FS\_IMVS39$\\[4ex]
 \end{tikzpicture}
 
 \clearpage
-			
+
+
 %%---ABSTRACT----------------------------------------------------------------------------
 \selectlanguage{ngerman}				%ngerman or english
 \thispagestyle{empty}
@@ -62,13 +68,19 @@ Projektnummer				&    $25FS\_IMVS39$\\[4ex]
 \selectlanguage{ngerman}				%ngerman or english
 \tableofcontents
 \clearpage
-
 \listoffigures
-%\listoftables
-\cleardoublepage
+\newpage
+\addcontentsline{toc}{section}{Listingverzeichnis}
+\renewcommand{\lstlistlistingname}{Listingverzeichnis}
+\lstlistoflistings
+\newpage
+\addcontentsline{toc}{section}{Glossar}
+\printglossaries
 
+\newpage
 %%---TEXT--------------------------------------------------------------------------------
 \pagenumbering{arabic}
+
 \include{sections/einleitung}
 \include{sections/monidas}
 %\include{sections/datenmodell}

@@ -1,0 +1,5 @@
+curl --location 'https://api.monidas.com/datahub/events/push' \
+--header 'json-authorization: { "token": "xyz" }' \
+--header 'x-monidas-uuid: b241083a-daaf-5e30-95f5-e74ddcaf2dcf' \
+--header 'Content-Type: application/json' \
+--data '{ "temp": 30 }'
