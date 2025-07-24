@@ -1,21 +1,20 @@
-Sensor: {
+User: {
     fields: {
         name: string,
-        isActive: boolean,
-        location: reference['Location'],
-        thresholds: references['Threshold'],
+        firstname: string,
+        lastname: string,
+        emailAddress: email,
+        organizations: references['Organization'],
     },
 },
-Location: {
+Organization: {
     fields: {
-        description: string,
-        latitude: number,
-        longitude: number,
+        name: string,
+        projects: references['Project']
     },
 },
-Threshold: {
+Project: {
     fields: {
-        limit: number,
-        unit: string,
+        name: string,
     },
-}
+},

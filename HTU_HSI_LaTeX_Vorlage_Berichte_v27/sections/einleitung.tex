@@ -1,18 +1,11 @@
 \section{Einleitung}
+\label{kap:ein}
 In diesem Kapitel wird die Auftragsgeberfirma Colomba Link vorgestellt. Es wird die Ausgangslage beschrieben und das zu lösende Problem wird eingeführt. Es werden grundlegende Begriffe definiert, die in dieser Thesis von Bedeutung sind.
-\gls{abb:HTTP}
-
-The \Gls{latex} typesetting markup language is specially suitable 
-for documents that include \gls{maths}. 
-
-\clearpage
-
-\printglossaries
-\clearpage
 
 \subsection{Colomba Link}
+Die Monidas-Plattform wurde in Kapitel \ref{} bereits im Zusammenhang mit dem Konfigurationsprozess beschrieben. Da dieser jedoch nur einen Teil der Gesamtfunktionalität abbildet, wird in diesem Abschnitt genauer auf die Plattform eingegangen. Im Fokus stehen die Benutzeroberfläche sowie das Domänenmodell, das für die Überwachung eines Sensors relevant ist. Ein Beispiel für die Darstellung erfasster Sensordaten ist in Abbildung \ref{fig:mon_plat} zu sehen. Dort werden die Trends von Sensoren angezeigt, die sich aktuell im Alarmzustand befinden. Neben dem aktuellen Messwert werden auch zeitliche Verläufe – etwa von Temperatur oder Luftfeuchtigkeit – visualisiert, sodass Veränderungen schnell erkennbar sind und die Daten einfach interpretiert werden können.
 
-Die Colomba Link GmbH entwickelt mit Monidas eine IoT-Plattform zur Vernetzung, Verwaltung und Auswertung industrieller Anlagendaten. Sie richtet sich an IoT-Spezialisten sowie Endnutzer und bietet Funktionen von der Einrichtung der Sensoren bis zur automatisierten Überwachung und Alarmierung. Derzeit konfigurieren technische Mitarbeitende die Sensoren kundenspezifisch über eine Weboberfläche (Monidas-Plattform). Komponenten wie Sensoren, Regeln und Benachrichtigungen müssen dabei einzeln erstellt und anschliessend manuell über mehrere Eingabemasken miteinander verknüpft werden. Mit zunehmender Anzahl von Sensoren steigt dadurch der Aufwand für das technische Personal. Aufgrund begrenzter Entwicklungsressourcen verfolgt das Startup das Ziel einer generischen Implementierung, welche Anpassungen und Erweiterungen des Datenmodells sowie den Verwaltungsprozess erleichtert und langfristig zu höherer Kundenzufriedenheit beiträgt. 
+Die Plattform bietet darüber hinaus weitere Ansichten für Sensordaten, diese sind jedoch nicht Gegenstand dieser Arbeit.
 
 \subsection{Konfigurationsprozess}
 \label{kap:konf}
@@ -74,7 +67,6 @@ Zur Reduktion dieses Aufwands wurde im Vorprojekt IP5 („Entwicklung einer VS-C
 
 In dieser Bachelorarbeit wird deshalb eine generische, datenmodellgesteuerte Lösung entwickelt, die diese Einschränkungen beseitigt. Neue Funktionen oder Konfigurationselemente müssen dadurch nicht mehr einzeln auf der Webplattform implementiert werden, sondern können ausschliesslich durch Anpassungen am Datenmodell bereitgestellt werden. Damit werden die Erweiterbarkeit und Wartbarkeit der Monidas-Plattform deutlich verbessert und der Entwicklungsaufwand signifikant reduziert.
 
-\newpage
 \subsection{Monidas Code Assist Navigator}
 Der Monidas Code Assist Navigator bietet eine alternative Schnittstelle zur Verwaltung und Konfiguration von Daten innerhalb der Entwicklungsumgebung Visual Studio Code. Die Benutzeroberfläche in VS Code besteht aus zwei Hauptkomponenten: einem Explorer und einem Editor.
 
@@ -118,7 +110,7 @@ Kapitel \ref{vfs}  behandelt das virtuelle Filesystem. Hier wird erläutert, wie
 
 Kapitel \ref{lsp} befasst sich mit der Editorunterstützung. Es wird gezeigt, wie durch Integration eines Language Server Protocols Validierung, Autovervollständigung und Navigation innerhalb des Editors umgesetzt werden.
 
-Kapitel \ref{sch} fasst abschliessend die Ergebnisse der vorliegenden Arbeit zusammen. Dabei werden die eingangs formulierten Forschungsfragen beantwortet, die entwickelte Lösung kritisch beurteilt sowie mögliche Erweiterungen aufgezeigt.
+Kapitel \ref{kap:eva} fasst abschliessend die Ergebnisse der vorliegenden Arbeit zusammen. Dabei werden die eingangs formulierten Forschungsfragen beantwortet, die entwickelte Lösung kritisch beurteilt sowie mögliche Erweiterungen aufgezeigt.
 
 
 

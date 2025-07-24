@@ -9,7 +9,6 @@ Für die Umsetzung des virtuellen Filesystems und des Language Servers werden Te
 \subsubsection*{Selva}
 Als Datenbanktechnologie kommt die Graphdatenbank \textit{Selva}\footnote{\url{https://github.com/atelier-saulx/selva}} zum Einsatz. 
 
-%Selva wurde aufgrund ihrer Unterstützung für komplexe Graphstrukturen und Echtzeit-Abfragen ausgewählt, wodurch sie sich gut für die Anforderungen der Monidas-Plattform eignet.
 
 \paragraph{Datenbankschema}
 Selva definiert das Datenmodell mithilfe eines Schemas, welches Objekttypen, deren Felder sowie erlaubte Datentypen beschreibt. Unterstützt werden einfachen Datentypen wie \texttt{string}, \texttt{int} und \texttt{boolean} sowie komplexere Beziehungstypen wie \texttt{reference} (für 0:1-Beziehungen) und \texttt{references} (für 0:n-Beziehungen).
@@ -18,39 +17,11 @@ Auf Datentyp-Ebene führt Selva grundlegende Validierungen automatisch durch. Be
 
 Weitergehende Anforderungen, wie Pflichtfelder, Pfadeinschränkungen, bidirektionale Verknüpfungen oder Einschränkungen bei der Erstellung neuer Objekte, werden von Selva nicht standardmässig unterstützt. Diese Constraints sind jedoch notwendig, um eine konsistente und fehlerfreie Verwaltung komplexer Datenstrukturen sicherzustellen. Deshalb wurden diese im Rahmen dieser Arbeit eigenständig definiert und implementiert. Eine detaillierte Erläuterung hierzu erfolgt in Abschnitt \ref{Constraints}.
 
-%; deren konkrete Umsetzung in der Implementierung des virtuellen Filesystems wird dort ebenfalls beschrieben.
-\pagebreak
 
 Ein vereinfachtes Schema zur Verdeutlichung könnte wie folgt aussehen:
 
-\lstdefinestyle{customtypescript}{
-  belowcaptionskip=1\baselineskip,
-  breaklines=true,
-  frame=single,
-  xleftmargin=\parindent,
-  numbers=left,
-  language=JavaScript,
-  showstringspaces=false,
-  basicstyle=\footnotesize\ttfamily\color{black},
-  keywordstyle=\bfseries\color{black},
-  commentstyle=\itshape\color{gray!60!black},
-  identifierstyle=\color{black},
-  stringstyle=\color{gray!20!black},
-  numberstyle=\tiny\color{gray!50},
-  rulecolor=\color{gray!70},
-  backgroundcolor=\color{gray!10},
-}
-
-\lstinputlisting[
-  caption={Beispiel eines Selva-Datenbankschemas}, 
-  label={lst:schema_beispiel},
-  style=customtypescript
-]{listings/schema_bsp.json}
-
 
 Im gezeigten Beispiel werden drei Objekttypen definiert: \texttt{Sensor}, \texttt{Location} und \texttt{Threshold}. Neben einfachen Attributen wie Name oder geografischen Angaben umfasst das Schema auch komplexe Beziehungsfelder. So besitzt der Sensor eine eindeutige Standortzuweisung sowie mehrere Grenzwerte.
-
-%Die konkrete Verwendung und Umsetzung des Schemas wird in Abschnitt \ref{sec:schema-umsetzung} beschrieben.
 
 \paragraph{Query Domain Specific Language (DSL)}
 Für Abfragen und Datenmanipulationen bietet Selva eine eigene Query DSL, die auf JavaScript-Objekten basiert. Diese DSL definiert, welche Daten abgefragt und wie diese präsentiert werden sollen. Dabei unterscheidet Selva zwischen:
