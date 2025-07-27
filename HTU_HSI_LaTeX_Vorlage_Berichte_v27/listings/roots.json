@@ -1,0 +1,4 @@
+roots: [
+  { label: 'Customers', type: 'Customer' },
+  { label: 'Products', type: 'Product' }
+]

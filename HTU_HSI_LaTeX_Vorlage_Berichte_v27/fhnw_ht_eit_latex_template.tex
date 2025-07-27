@@ -16,6 +16,34 @@
 \input{tex/glossar.tex}
 \makeglossaries
 
+
+
+\lstdefinestyle{customtypescript}{
+  belowcaptionskip=1\baselineskip,
+  breaklines=true,
+  frame=single,
+  xleftmargin=\parindent,
+  numbers=left,
+  language=Java, % absichtlich Java für bessere Farben
+  showstringspaces=false,
+  basicstyle=\footnotesize\ttfamily,
+  keywordstyle=\color{black}, % Verhindert falsches Blau bei z. B. „label“
+  commentstyle=\itshape\color{green!60!black},
+  identifierstyle=\color{black},
+  stringstyle=\color{orange!80!black},
+  numberstyle=\tiny\color{gray!70},
+  rulecolor=\color{gray!70},
+  backgroundcolor=\color{gray!5},
+  morekeywords={}, % verhindert zusätzliche Keywords
+  literate={ß}{{\ss}}1
+           {Ö}{{\"O}}1 {Ä}{{\"A}}1 {Ü}{{\"U}}1
+           {ü}{{\"u}}1 {ä}{{\"a}}1 {ö}{{\"o}}1
+           {`}{\textasciigrave}1
+           {'}{{\textquotesingle}}1
+           {"}{{\textquotedbl}}1
+}
+
+
 \addbibresource{literature/beispiel_bib.bib}
 											
 \title{Code Assist und Navigation für IoT-Konfigurationen

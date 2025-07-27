@@ -1,20 +1,24 @@
-User: {
-    fields: {
-        name: string,
-        firstname: string,
-        lastname: string,
-        emailAddress: email,
-        organizations: references['Organization'],
+{
+  types: {
+    User: {
+      fields: {
+        name: { type: 'string' },
+        firstname: { type: 'string' },
+        lastname: { type: 'string' },
+        emailAddress: { type: 'email' },
+        organizations: { type: 'references', ref: 'Organization' }
+      }
     },
-},
-Organization: {
-    fields: {
-        name: string,
-        projects: references['Project']
+    Organization: {
+      fields: {
+        name: { type: 'string' },
+        projects: { type: 'references', ref: 'Project' }
+      }
     },
-},
-Project: {
-    fields: {
-        name: string,
-    },
-},
+    Project: {
+      fields: {
+        name: { type: 'string' }
+      }
+    }
+  }
+}

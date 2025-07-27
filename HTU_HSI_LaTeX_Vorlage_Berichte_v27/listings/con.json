@@ -1,0 +1,25 @@
+Order: {
+  fields: {
+    billingAddress: {
+      type: 'reference',
+      ref: 'Address',    
+      constraints: [
+        { type: 'denyCreation' },                     
+        { type: 'notNull' },                          
+        { type: 'allowReference', path: 'customers.addresses' } 
+      ]
+    },
+    // Weitere Felder einer Bestellung ...
+  }
+},
+
+Customer: {
+  meta: {
+    root: { label: 'Customers' } 
+  },
+  fields: {
+    // Felder des Kunden...
+  }
+},
+
+// Weitere Typdefinitionen ...

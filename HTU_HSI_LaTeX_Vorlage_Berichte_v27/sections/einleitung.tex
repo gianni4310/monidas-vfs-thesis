@@ -70,9 +70,8 @@ In dieser Bachelorarbeit wird deshalb eine generische, datenmodellgesteuerte Lö
 \subsection{Monidas Code Assist Navigator}
 Der Monidas Code Assist Navigator bietet eine alternative Schnittstelle zur Verwaltung und Konfiguration von Daten innerhalb der Entwicklungsumgebung Visual Studio Code. Die Benutzeroberfläche in VS Code besteht aus zwei Hauptkomponenten: einem Explorer und einem Editor.
 
-Abbildung \ref{fig:res} zeigt, wie der Explorer die Daten übersichtlich in einer Baumstruktur darstellt, während der Editor die Bearbeitung der ausgewählten Daten ermöglicht. Die Ansicht des Explorers basiert auf einem Datenmodell, das aus dem Schema der verwendeten Datenbank abgeleitet wird. Der Editor wird durch einen eigenen Language Server unterstützt, der Funktionen wie Code-Analyse, Validierung und Autovervollständigung bereitstellt.
+Abbildung \ref{fig:res} zeigt, wie der Explorer die Daten übersichtlich in einer Baumstruktur darstellt, während der Editor die Bearbeitung der ausgewählten Daten ermöglicht. Die Ansicht des Explorers basiert auf einem Datenmodell, das aus dem Schema der verwendeten Datenbank abgeleitet wird. Der Editor wird durch einen eigenen Language Server unterstützt, der spezifische Funktionen für die Verwaltung der Datenbankentitäten bereitstellt, darunter Validierung, Autovervollständigung und Navigation innerhalb der definierten Datenmodell.
 
-Dank der Nutzung von Visual Studio Code können weitere Entwicklungswerkzeuge, beispielsweise Git, Debugger sowie verschiedene Plugins, direkt verwendet werden.
 
 
 \begin{figure}[H]
@@ -104,11 +103,11 @@ In den folgenden Kapiteln werden die einzelnen Aspekte dieses Projekts genauer b
  
 Kapitel \ref{mon} beschäftigt sich mit der Monidas-Plattform. Dabei wird erläutert, wie die Plattform aufgebaut ist, wie das Domänenmodell definiert wurde und welche Technologien eingesetzt wurden. Berücksichtigt werden Technologien, die für die entwickelte Lösung relevant sind.
 
-Kapitel \ref{schema} behandelt die Anpassungen am Schema. Es wird gezeigt, welche zusätzlichen Schema-Anpassungen notwendig sind, um die entwickelte Lösung umzusetzen. Da das ursprüngliche Domänenmodell der Monidas-Plattform sehr umfangreich ist, wird in diesem Kapitel zudem ein vereinfachtes Domänenmodell eingeführt, welches die entwickelte Lösung verständlich und übersichtlich darstellt. Dieses vereinfachte Modell dient als Grundlage für die Erläuterungen in den Kapiteln \ref{vfs} und \ref{lsp}.
+Kapitel \ref{kap:dbschema} behandelt die Anpassungen am Schema. Es wird gezeigt, welche zusätzlichen Schema-Anpassungen notwendig sind, um die entwickelte Lösung umzusetzen. Da das ursprüngliche Domänenmodell der Monidas-Plattform sehr umfangreich ist, wird in diesem Kapitel zudem ein vereinfachtes Domänenmodell eingeführt, welches die entwickelte Lösung verständlich und übersichtlich darstellt. Dieses vereinfachte Modell dient als Grundlage für die Erläuterungen in den Kapiteln \ref{kap:vfs} und \ref{kap:lsp}.
 
-Kapitel \ref{vfs}  behandelt das virtuelle Filesystem. Hier wird erläutert, wie das vereinfachte Domänenmodell aus Kapitel \ref{schema} genutzt wird, um Daten übersichtlich darzustellen und zu bearbeiten.
+Kapitel \ref{kap:vfs}  behandelt das virtuelle Filesystem. Hier wird erläutert, wie das vereinfachte Domänenmodell aus Kapitel \ref{kap:dbschema} genutzt wird, um Daten übersichtlich darzustellen und zu bearbeiten.
 
-Kapitel \ref{lsp} befasst sich mit der Editorunterstützung. Es wird gezeigt, wie durch Integration eines Language Server Protocols Validierung, Autovervollständigung und Navigation innerhalb des Editors umgesetzt werden.
+Kapitel \ref{kap:lsp} befasst sich mit der Editorunterstützung. Es wird gezeigt, wie durch Integration eines Language Server Protocols Validierung, Autovervollständigung und Navigation innerhalb des Editors umgesetzt werden.
 
 Kapitel \ref{kap:eva} fasst abschliessend die Ergebnisse der vorliegenden Arbeit zusammen. Dabei werden die eingangs formulierten Forschungsfragen beantwortet, die entwickelte Lösung kritisch beurteilt sowie mögliche Erweiterungen aufgezeigt.
 

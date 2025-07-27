@@ -57,8 +57,8 @@ Wird dieser Grenzwert überschritten, ändert sich der Status auf \textit{Alarm}
 
 
 \subsection{Technologien}
-\label{mon:tech}
-Für die Umsetzung des virtuellen Dateisystems und des Language Servers werden Technologien verwendet, die gezielt auf die bestehende Infrastruktur der Monidas-Plattform abgestimmt sind. Diese Technologien wurden in Absprache mit dem Auftraggeber ausgewählt, um eine nahtlose Integration, Wartbarkeit und Erweiterbarkeit sicherzustellen. Im Folgenden werden nur jene Aspekte beschrieben, die für das Verständnis und die Umsetzung der in dieser Arbeit entwickelten Lösung relevant sind.
+\label{abb:tech}
+Für die Umsetzung des virtuellen Dateisystems und des Language Servers werden Technologien verwendet, die gezielt auf die bestehende Infrastruktur der Monidas-Plattform abgestimmt sind. Diese Technologien wurden in Absprache mit dem Auftraggeber ausgewählt, um eine nahtlose Integration, Wartbarkeit und Erweiterbarkeit sicherzustellen. Im Folgenden werden nur jene Aspekte beschrieben, die für das Verständnis und die Umsetzung der in dieser Arbeit entwickelten Lösung relevant sind. Es ist anzumerken, dass die verfügbare Dokumentation der eingesetzten Technologien in Form von Repository-Dokumenten vorliegt, welche grundlegende Informationen bereitstellen und nur in begrenztem Umfang detaillierte Erläuterungen enthalten.
 
 \subsubsection*{Selva}
 
@@ -77,31 +77,11 @@ Ein vereinfachtes Beispiel eines Selva-Datenbankschemas für die in Abbildung~\r
 
 \newpage
 
-\lstdefinestyle{json}{
-  belowcaptionskip=1\baselineskip,
-  breaklines=true,
-  frame=single,
-  xleftmargin=\parindent,
-  numbers=left,
-  language=Json,
-  showstringspaces=false,
-  basicstyle=\footnotesize\ttfamily,
-  keywordstyle=\bfseries\color{blue!70!black},
-  commentstyle=\itshape\color{green!60!black},
-  identifierstyle=\color{black},
-  stringstyle=\color{orange!80!black},
-  numberstyle=\tiny\color{gray!70},
-  rulecolor=\color{gray!70},
-  backgroundcolor=\color{gray!5},
-  literate={Ö}{{\"O}}1 {Ä}{{\"A}}1 {Ü}{{\"U}}1 {ss}{{\ss}}1
-           {ü}{{\"u}}1 {ä}{{\"a}}1 {ö}{{\"o}}1
-}
-
 
 \lstinputlisting[
   caption={Beispiel eines Selva-Datenbankschemas}, 
   label={lst:schema_beispiel},
-  style=json
+  style=customtypescript
 ]{listings/schema_bsp.json}
 
 
@@ -113,25 +93,7 @@ In Selva existieren mehrere intern vordefinierte Felder, die nicht explizit im D
 Listing~\ref{lst:selva_bsp} veranschaulicht die beschriebenen Operationen in einem praxisnahen Anwendungsfall. Zunächst wird eine neue Organisation mit einem Alias erstellt. Danach wird diese sowohl über die automatisch generierte ID als auch über den definierten Alias abgefragt. Anschliessend demonstriert das Beispiel die Überwachung von Echtzeitänderungen am Objekt. Abschliessend wird gezeigt, wie mithilfe eines externen Alias eine eindeutige ID generiert werden kann, um gezielt ein weiteres Objekt zu erstellen und dieses anschliessend zu löschen. Die in diesem Beispiel dargestellten Operationen bilden die Basis für die entwickelte Lösung, insbesondere für die Umsetzung des virtuellen Filesystems und des Language Servers.
 
 \newpage
-\lstdefinestyle{customtypescript}{
-  belowcaptionskip=1\baselineskip,
-  breaklines=true,
-  frame=single,
-  xleftmargin=\parindent,
-  numbers=left,
-  language=Java,
-  showstringspaces=false,
-  basicstyle=\footnotesize\ttfamily,
-  keywordstyle=\bfseries\color{blue!70!black},
-  commentstyle=\itshape\color{green!60!black},
-  identifierstyle=\color{black},
-  stringstyle=\color{orange!80!black},
-  numberstyle=\tiny\color{gray!70},
-  rulecolor=\color{gray!70},
-  backgroundcolor=\color{gray!5},
-  literate={Ö}{{\"O}}1 {Ä}{{\"A}}1 {Ü}{{\"U}}1 {ss}{{\ss}}1
-           {ü}{{\"u}}1 {ä}{{\"a}}1 {ö}{{\"o}}1
-}
+
 
 \lstinputlisting[
   caption={Beispiel zur Verwendung der Selva-API}, 
