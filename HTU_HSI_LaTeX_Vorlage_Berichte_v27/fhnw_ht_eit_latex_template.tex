@@ -12,11 +12,11 @@
 %%%%%
 \usepackage{xcolor}
 
-\usepackage[automake]{glossaries}
+
 \input{tex/glossar.tex}
-\makeglossaries
 
 
+\usepackage{booktabs}
 
 \lstdefinestyle{customtypescript}{
   belowcaptionskip=1\baselineskip,
@@ -99,6 +99,8 @@ Projektnummer				&    $25FS\_IMVS39$\\[4ex]
 \clearpage
 \listoffigures
 \newpage
+\listoftables
+\newpage
 \addcontentsline{toc}{section}{Listingverzeichnis}
 \renewcommand{\lstlistlistingname}{Listingverzeichnis}
 \lstlistoflistings
@@ -113,9 +115,9 @@ Projektnummer				&    $25FS\_IMVS39$\\[4ex]
 \include{sections/einleitung}
 \include{sections/monidas}
 %\include{sections/datenmodell}
-%\include{sections/arch}
+\include{sections/arch}
 \include{sections/schema}
-\include{sections/vfs}
+\include{sections/vfs1}
 \include{sections/lsp}
 \include{sections/schluss}
 

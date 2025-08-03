@@ -15,6 +15,8 @@ export type ExtendedMeta = Meta & {
 
 export type ExtendedField = FieldSchema & {
   constraints?: FieldConstraint[]
+  isLeaf?: boolean
+  hasPossibleCycle?: boolean
 }
 
 export type FieldConstraint =

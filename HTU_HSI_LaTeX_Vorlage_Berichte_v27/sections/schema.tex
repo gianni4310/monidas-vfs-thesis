@@ -10,7 +10,7 @@ Das Ziel dieser Bachelorarbeit ist die Entwicklung einer generischen, datenmodel
 \label{abb:domaenenmodell}
 Das in Abschnitt~\ref{abb:tech} beschriebene Domänenmodell ist zu komplex, um es unverändert in der entwickelten Lösung zu verwenden. Deshalb wird zunächst ein vereinfachtes Modell definiert, das für die Umsetzung geeignet ist. Die Übertragbarkeit auf das Domänenmodell der Monidas-Plattform wird in Kapitel~\ref{kap:eva} untersucht.
 
-Das für diese Arbeit verwendete Domänenmodell bildet ein typisches Szenario aus dem E-Commerce-Bereich ab. Das Modell besteht aus den fünf Entitäten: \textit{Customer}, \textit{Address}, \textit{Order}, \textit{LineItem} und \textit{Product}. Ein \textit{Customer} (Kunde) verfügt über Angaben wie Vorname, Nachname und eine E-Mail-Adresse. Jeder Kunde besitzt mehrere Adressen (\textit{Address}) und kann mehrere Bestellungen (\textit{Order}) tätigen. Eine Adresse umfasst die Strasse, Stadt sowie das Land und gehört eindeutig zu einem Kunden. Jede Bestellung besitzt eine Rechnungsadresse (\textit{billingAddress}) und optional eine Lieferadresse (\textit{shippingAddress}). Eine Bestellung besteht aus mindestens einer Bestellposition (\textit{LineItem}), welche jeweils ein Produkt (\textit{Product}) mit einer definierten Menge und einem Einzelpreis referenziert. Ein Produkt enthält eine eindeutige Beschreibung sowie einen Preis.
+Das für diese Arbeit verwendete Domänenmodell ist in Abbildung~\ref{ab:con} dargestellt und bildet ein typisches Szenario aus dem E-Commerce-Bereich ab. Das Modell besteht aus den fünf Entitäten: \textit{Customer}, \textit{Address}, \textit{Order}, \textit{LineItem} und \textit{Product}. Ein \textit{Customer} (Kunde) verfügt über Angaben wie Vorname, Nachname und eine E-Mail-Adresse. Jeder Kunde besitzt mehrere Adressen (\textit{Address}) und kann mehrere Bestellungen (\textit{Order}) tätigen. Eine Adresse umfasst die Strasse, Stadt sowie das Land und gehört eindeutig zu einem Kunden. Jede Bestellung besitzt eine Rechnungsadresse (\textit{billingAddress}) und optional eine Lieferadresse (\textit{shippingAddress}). Eine Bestellung besteht aus mindestens einer Bestellposition (\textit{LineItem}), welche jeweils ein Produkt (\textit{Product}) mit einer definierten Menge und einem Einzelpreis referenziert. Ein Produkt enthält eine eindeutige Beschreibung sowie einen Preis.
 
 \begin{figure}[H]
     \centering
@@ -20,14 +20,16 @@ Das für diese Arbeit verwendete Domänenmodell bildet ein typisches Szenario au
 \end{figure}
 
 \subsection{Schemaerweiterungen}
+Um die Anforderungen der Anwendung erfüllen zu können, mussten Erweiterungen am bestehenden Schema vorgenommen werden. Diese umfassen die Definition von Einstiegspunkten (Roots), Bedingungen (Constraints) sowie die dynamische Ableitung zusätzlicher Informationen.
+
 \label{ab:con}
 \subsubsection{Roots}
-Unter dem Begriff Roots werden die im Schema definierten Einstiegspunkte verstanden. Diese bestimmen, bei welchen Entitäten die Navigation im virtuellen Filesystem beginnt. Für jeden Root wird ein Label festgelegt, das im Filesystem als Ordnername angezeigt wird. Dieses Label wird direkt im Schema definiert und kann unabhängig vom Namen der Entität frei gewählt werden.
+Unter dem Begriff «Roots» werden die im Schema definierten Einstiegspunkte verstanden. Diese bestimmen, bei welchen Entitäten die Navigation im virtuellen Filesystem beginnt. Für jeden Root wird ein Label festgelegt, das im Filesystem als Ordnername angezeigt wird. Dieses Label wird direkt im Schema definiert und kann unabhängig vom Namen der Entität frei gewählt werden.
 
 Im E-Commerce-Domänenmodell (siehe Abbildung \ref{fig:uml_domaenenmodell}) könnten beispielsweise die Entitäten \textit{Customer} mit dem Label \textit{Customers} und \textit{Product} mit dem Label \textit{Products} als Roots definiert werden.
 
 \subsubsection{Constraints}
-Unter Constraints werden in dieser Thesis Bedingungen verstanden, die das Standardverhalten der Applikation gezielt ergänzen oder einschränken. Sie stellen sicher, dass die Daten bestimmte Anforderungen erfüllen und inhaltlich konsistent bleiben. Diese Bedingungen werden ausschliesslich von der Anwendungslogik geprüft und nicht von der Datenbank selbst.
+Unter «Constraints» werden in dieser Thesis Bedingungen verstanden, die das Standardverhalten der Applikation gezielt ergänzen oder einschränken. Sie stellen sicher, dass die Daten bestimmte Anforderungen erfüllen und inhaltlich konsistent bleiben. Diese Bedingungen werden ausschliesslich von der Anwendungslogik geprüft und nicht von der Datenbank selbst.
 
 Das Standardverhalten der Applikation sieht vor, dass neue Objekte direkt innerhalb ihres übergeordneten Knotens erstellt werden. Dieses Verhalten folgt einer Parent-Child-Hierarchie. Das Referenzieren eines bereits bestehenden Objekts ist standardmässig deaktiviert. Mit „Referenzieren“ wird in dieser Arbeit verstanden, dass beispielsweise bei einer Bestellung keine neue Adresse erstellt, sondern eine bereits existierende Adresse zugeordnet wird.
 
@@ -35,44 +37,38 @@ Werden jedoch zusätzliche Bedingungen benötigt, um das Standardverhalten gezie
 
 Beim Erstellen eines neuen Kunden ist die Angabe einer E-Mail-Adresse zwingend erforderlich (notNull), andernfalls ist das Speichern nicht möglich. Anschliessend erstellt der Kunde zwei Adressen, beispielsweise eine Heimadresse und eine Arbeitsadresse, welche eindeutig diesem Kunden zugeordnet sind. Möchte der Kunde eine Bestellung tätigen, ist dafür zwingend die Angabe einer Rechnungsadresse (billingAddress) erforderlich (notNull). Innerhalb der Bestellung ist das Erstellen einer neuen Rechnungsadresse technisch nicht möglich, da dies explizit deaktiviert wurde (denyCreation). Stattdessen muss eine bereits vorhandene Adresse ausgewählt werden (allowReference), beispielsweise die zuvor erstellte Arbeitsadresse. Darüber hinaus muss jede Bestellung mindestens eine Bestellposition enthalten (notNull). Diese Bestellposition wird direkt im Kontext der Bestellung erstellt und muss zwingend auf ein bereits bestehendes Produkt (Product) verweisen (allowReference, denyCreation). Optional kann zudem eine Lieferadresse angegeben werden. Diese Lieferadresse wird direkt im Kontext der Bestellung erstellt und existiert ausschliesslich dort. Das Referenzieren bereits bestehender Adressen, beispielsweise der Heim- oder Arbeitsadresse, ist hierbei technisch deaktiviert und daher nicht möglich (Standardverhalten).
 
-\subsubsection{Dynamische Ableitung}
-Die zuvor beschriebenen Schemaerweiterungen wie Constraints und Roots werden statisch im Datenbankschema definiert. Bereits während der Entwicklung zeigt sich jedoch, dass nicht jede 
-Informationen  zwingend im Schema definiert werden muss. 
-
-Mittels einer Analyse des Schemas durch geeignete Traversierungsalgorithmen lassen sich zusätzliche Informationen ermitteln, ohne diese  im Schema definieren zu müssen. Dies reduziert den Entwicklungsaufwand erheblich und schafft zugleich eine  Grundlage für spätere Erweiterungen.  Daraus ergibt sich ein dynamisch erweiterbares Schema, das flexibel auf zukünftige Anforderungen reagiert.
-
-Das definierte Datenbankschema bildet durch die Referenzen auf andere Entitäten einen gerichteten Graphen ab. Abhängig vom Domänenmodell und der konkreten Definition des Schemas können dabei auch Zyklen vorkommen. Für eine Analyse ist es erforderlich, dass jeder Knoten im Schema mindestens einmal besucht wird, um alle Informationen ableiten zu können die benötigt werden.
-
-
-
-
-Aus diesem Grund wird der Traversierungsalgorithmus der Tiefensuche (Depth-First Search, DFS) ausgewählt. Die Tiefensuche ermöglicht es, ausgehend von definierten Einstiegspunkten, jeden erreichbaren Knoten systematisch zu besuchen und potenzielle Zyklen zu erkennen. Durch dieses Vorgehen ist gewährleistet, dass sämtliche Referenzpfade im Schema vollständig analysiert werden. Dies bildet die methodische Grundlage für die anschliessende Ableitung zusätzlicher Informationen.
-
-
-
-
-
-
-
-
 \subsubsection{Schema Analyse}
-Die Laufzeiterweiterung des Schemas verfolgt das Ziel, zusätzliche Informationen aus dem definierten Datenmodell abzuleiten. Hierfür wird das Schema mithilfe geeigneter Traversierungsalgorithmen analysiert, um spezifische Eigenschaften zu ermitteln, welche später für die Navigation im virtuellen Filesystem und für die Validierung im Language Server verwendet werden können.
+\label{sec:dynamischerAb}
+Die zuvor beschriebenen Schemaerweiterungen wie Constraints und Roots werden statisch definiert. Eine weitere Information, nämlich ob ein Referenzfeld zu einem Blattknoten (\textit{isLeaf}) führt, lässt sich hingegen durch eine Schema-Analyse ableiten. Ein Blattknoten bezeichnet hierbei einen Knoten, dessen Entitätstyp keine weiteren ausgehenden Referenzen besitzt. Diese ermittelte Information wird genutzt, um Darstellungs- und Bearbeitungslogiken innerhalb des virtuellen Filesystems zu steuern. Die konkrete Verwendung wird detailliert in Kapitel~\ref{kap:vfs} erläutert. Dies wird direkt im Schema ergänzt, wodurch sich der Modellierungsaufwand reduziert und die Flexibilität für Erweiterungen steigt.
 
+Für die Schema-Analyse wird das Schema als gerichteter Graph interpretiert. Entitätstypen wie \textit{Customer}, \textit{Order}, \textit{Address}, \textit{LineItem} und \textit{Product} bilden dabei die Knoten, während Referenzfelder wie \textit{addresses}, \textit{billingAddress}, \textit{shippingAddress}, \textit{customer}, \textit{items} und \textit{product} die gerichteten Kanten darstellen. Zur Traversierung des Graphen wird der Algorithmus der Tiefensuche (Depth-First Search, DFS) verwendet. Dabei handelt es sich um einen Graphen-Algorithmus, der von einem Startknoten ausgehend zunächst einen Pfad vollständig verfolgt, bevor zurückgegangen und der nächste Pfad untersucht wird. 
 
-\subsubsection{Ableitung zusätzlicher Informationen}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{dag.png}
+    \caption{Gerichtete Graphdarstellung des E-Commerce-Datenbankschemas}
+    \label{fig:dag}
+\end{figure}
+\newpage
 
-\subsection{Bereitstellung und Zugriff}
+Im Rahmen der Lösungsfindung wurden weitere Ansätze zur Informationsableitung geprüft. Einer dieser Ansätze bestand darin, sämtliche möglichen URIs bereits im Vorfeld aus dem Schema abzuleiten. Ein URI (Uniform Resource Identifier) bezeichnet hierbei einen eindeutigen Pfad, der sich aus der Abfolge von Referenzfeldern (gerichteten Kanten) und Instanzen von Entitätstypen (Knoten) zusammensetzt. Eine Instanz bezeichnet dabei ein konkretes Datenobjekt, das auf Basis einer im Schema definierten Entität erzeugt wurde. Beispielsweise ergibt sich ein URI aus einer Abfolge wie:
 
+\begin{center}
+\texttt{Customers/\{customerId\}/Orders/\{orderId\}}
+\end{center}
 
+Ziel dieses Ansatzes war es, alle gültigen URI-Muster im Vorfeld zu ermitteln, um URIs zur Laufzeit validieren zu können. Dieses Vorgehen ist allerdings nur geeignet, wenn im Schema keine Zyklen auftreten. Sobald zyklische Referenzen vorhanden sind, entstehen theoretisch unendlich viele URI-Kombinationen. Daher lässt sich dieser Ansatz bei zyklischen Schemata nicht allgemein anwenden.
+
+Ein weiterer untersuchter Ansatz bestand darin, die genaue Pfadtiefe eines URI bereits im Voraus zu ermitteln. Da jedoch eine vollständige Abbildung aller möglichen URIs vorab nicht realisierbar war und sich die Pfadtiefe ohnehin einfach direkt aus dem URI während einer Anfrage ableiten lässt, erwies sich dieser Ansatz letztlich als nicht zielführend und wurde verworfen.
+%hasPossbileCycle
+%\subsection{Bereitstellung und Zugriff}
 
 \subsection{Umsetzung}
+
 \subsubsection{Roots und Constraints}
-In diesem Abschnitt wird erläutert, wie die zuvor beschriebenen Schemaerweiterungen „Roots“ und „Constraints“ konkret umgesetzt wurden. Da die Felder für „Roots“ und „Constraints“ in der ursprünglichen TypeScript-Typdefinition von \texttt{@colombalink/based-db-schema} nicht vorhanden sind, musste die bestehende Typdefinition erweitert werden.
+Die Definition von Einstiegspunkten („Roots“) sowie zusätzlichen Validierungen („Constraints“) erfordert eine Erweiterung der ursprünglichen TypeScript-Typdefinition aus der Colombalink-Bibliothek. Für die Umsetzung wurde das bestehende Schema aus der Colombalink-Bibliothek angepasst. Dabei wurde die Typdefintion Schema erweitert, um die Definition von Roots und Constraints zu ermöglichen. Die dafür notwendigen TypeScript-Features wie Omit, Intersection Types, Union Types und Generics stellten sicher, dass diese Erweiterung umgesetzt werden konnte~\cite{typescript:handbook}. Das Ergebnis ist ein erweitertes Schema, das den Anforderungen aus Abschnitt~\ref{abb:anforderungen} entspricht. Die genaue technische Umsetzung befindet sich im Anhang in Listing~\ref{lst:extended-schema}.
 
-
-Für die konkrete Umsetzung wurde das bestehende Schema aus der Colombalink-Bibliothek angepasst. Dabei wurde der ursprüngliche Typ (Schema) erweitert, um die Definition von Roots und Constraints zu ermöglichen. Die dafür notwendigen TypeScript-Features wie Omit, Intersection Types, Union Types und Generics stellten sicher, dass diese Erweiterung typsicher umgesetzt werden konnte~\cite{typescript:handbook}. Das Ergebnis ist ein erweitertes Schema, das den Anforderungen aus Abschnitt~\ref{abb:anforderungen} entspricht. Die genaue technische Umsetzung befindet sich im Anhang in Listing~\ref{lst:extended-schema}.
-
-Im vorherigen Abschnitt wurde bereits erläutert, wie im konkreten E-Commerce-Domänen\-modell die Entitäten \textit{Customer} und \textit{Product} als Roots definiert wurden, sowie welche Constraints für die Entität \textit{Order} gesetzt wurden. Im nachfolgenden Listing~\ref{lst:con} ist nun dargestellt, wie diese Definitionen konkret in der erweiterten Typdefinition gesetzt werden:
+Im vorherigen Abschnitt wurde bereits erläutert, wie im konkreten E-Commerce-Domänen\-modell die Entitäten \textit{Customer} und \textit{Product} als Roots definiert wurden, sowie welche Constraints für die Entität \textit{Order} gesetzt wurden. Im nachfolgenden Listing~\ref{lst:con} ist dargestellt, wie dies im erweiterten Schema definiert werden können.
 
 \newpage
 \lstinputlisting[
@@ -81,7 +77,32 @@ label={lst:con},
 style=customtypescript
 ]{listings/con.json}
 
-Damit bildet das erweiterte Schema die zuvor beschriebenen fachlichen Anforderungen vollständig ab.
+\newpage
+\subsubsection{Schema Analyse}
+Die technische Umsetzung der Schema-Analyse erfolgt mithilfe einer rekursiven Tiefensuche. Ausgangspunkte der Traversierung sind die zuvor definierten Einstiegspunkte (\textit{Customer} und \textit{Product}, siehe Abschnitt~\ref{ab:con}).
+
+Während der Tiefensuche wird jeder besuchte Entitätstyp (Knoten) erfasst. Wird ein bereits besuchter Knoten erneut erreicht, deutet dies auf einen möglichen Zyklus hin und die weitere Traversierung entlang dieses Pfades wird beendet. Hat ein referenzierter Knoten keine weiteren ausgehenden Referenzen, wird das Feld \texttt{isLeaf} gesetzt, um ihn als Blattknoten zu kennzeichnen.
+
+Das Ergebnis der Schema-Analyse für das E-Commerce-Schema ist in Tabelle~\ref{tab:schema-analyse-dfs} dargestellt. Der zugehörige Code befindet sich im Anhang (Listing~\ref{lst:extendSchemaDFS}).
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{lllc}
+    \toprule
+    \textbf{Ausgangsknoten} & \textbf{Referenz (Kante)} & \textbf{Zielknoten} & \textbf{isLeaf}\\ 
+    \midrule
+    Product & – & – & – \\[4pt]
+    Customer & addresses & Address & Ja \\[4pt]
+    Customer & orders & Order & Nein \\[4pt]
+    Order & billingAddress & Address & Ja \\[4pt]
+    Order & shippingAddress & Address & Ja \\[4pt]
+    Order & items & LineItem & Nein \\[4pt]
+    LineItem & product & Product & Ja \\[4pt]
+    Order & customer & Customer & Nein \\ 
+    \bottomrule
+  \end{tabular}
+  \caption{Ergebnis der Schema-Analyse mit DFS für das E-Commerce-Schema}
+  \label{tab:schema-analyse-dfs}
+\end{table}
 
 
-\subsubsection{Laufzeit Erweiterung}
